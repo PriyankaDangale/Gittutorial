@@ -15,11 +15,11 @@
 <form action="#" onsubmit="save(event)" align="center">
     <div class="container-md">
 <label for="name" class="form-label"> Enter name </label>
-<input type="text" class="form-control"  id="name" name="name1" value="Priyanka">
+<input type="text" class="form-control"  id="name" name="name1" value="Priyanka" required>
 </div>
 <div class="container-md">
-<label for="email" class="form-label">Enter Email</label>
-<input type="email" class="form-control" id="email" name="email1" value="Prdangale2016@gmail.com">
+<label for="email" class="form-label">Enter Email </label>
+<input type="email" class="form-control" id="email" name="email1" value="Prdangale2016@gmail.com" required>
 </div>
 <div class="container-md">
 <label for="phonenumber" class="form-label">Enter Contact number</label>
@@ -51,7 +51,18 @@
         showUserOnScreen(obj);
         function showUserOnScreen(obj){
             const parentELem=document.getElementById('listOfitems');
-            parentELem.innerHTML= `<li>${obj.name} - ${obj.email} -${obj.pn}</li>`
+            const childele=document.createElement('li');
+            parentELem.innerHTML= obj.name + '-' + obj.email + '-' + obj.pn;
+            const delebu=document.createElement('input');
+            delebu.type="button";
+            delebu.value="Delete";
+            delebu.onclick=()=>{
+                localStorage.removeItem(obj.email);
+                parentElem.removeChild(childele)
+            }
+            childElem.appendChild(deletebu);
+            parentELem.appendChild(childele);
+            
         }
        
     }
