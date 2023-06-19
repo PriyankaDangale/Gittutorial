@@ -33,12 +33,26 @@
         const name=event.target.name1.value;
         const email=event.target.email1.value;
         const pn=event.target.pn.value;
-        localStorage.setItem('name',name);
-        console.log(localStorage.getItem('name'));
-        localStorage.setItem('email',email);
-        console.log(localStorage.getItem('email'));
-        localStorage.setItem('phone',pn);
-        console.log(localStorage.getItem('phone'));
+       // localStorage.setItem('name',name);
+        //console.log(localStorage.getItem('name'));
+        //localStorage.setItem('email',email);
+        //console.log(localStorage.getItem('email'));
+        //localStorage.setItem('phone',pn);
+        //console.log(localStorage.getItem('phone'));
+        const obj={
+            name,
+            email,
+            pn
+        }
+        localStorage.setItem(obj.name,JSON.stringify(obj));
+        //localStorage.setItem(obj.email,JSON.stringify(obj));
+        //localStorage.setItem(obj.pn,JSON.stringify(obj));
+
+        showUserOnScreen(obj);
+        function showUserOnScreen(obj){
+            const parentELem=document.getElementById('listOfitems');
+            parentELem.innerHTML= `<li>${obj.name} - ${obj.email} -${obj.pn}</li>`
+        }
        
     }
 </script>
