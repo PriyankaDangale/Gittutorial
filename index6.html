@@ -60,11 +60,23 @@
                 localStorage.removeItem(obj.email);
                 parentElem.removeChild(childele)
             }
+ 
+        
+        const edit=document.createElement('input');
+            delebu.type="button";
+            delebu.value="edit";
+            edit.onclick=()=>{
+                localStorage.removeItem(obj.email);
+                parentElem.removeChild(childele);
+                document.getElementById('name1InputTag').value=obj.name;
+                document.getElementById('emailInputTag').value=obj.email;
+                document.getElementById('pnInputTag').value=obj.pn;
+
+            }
             childElem.appendChild(deletebu);
-            parentELem.appendChild(childele);
-            
-        }
-       
+            childElem.appendChild(edit);
+            parentELem.appendChild(childele); 
+
     }
 </script>
 </body>
