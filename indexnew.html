@@ -75,9 +75,10 @@
                 const deleteButton = document.createElement('input');
                 deleteButton.type = 'button';
                 deleteButton.value = 'Delete';
-                deleteButton.onclick = () => {
+                deleteButton.onclick = (email) => {
                     localStorage.removeItem(obj.email);
                     parentElem.removeChild(childElem);
+                    axios.delete("https://crudcrud.com/api/9d6c015353c540fe843fdcd73aa7cef7/appointments/email").then((response)=>comsole.log(response)).catch((error)=>console.log(error))
                 };
 
                 const editButton = document.createElement('input');
