@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Products</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+    <style>
+        .product-list {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align: center;">Add Products</h1>
+    <br><br>
+
+    <form id="productForm"
+        style="text-align: center; border: 2px solid; padding: 2rem; background-color: lightslategray; color: white;">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="pn" placeholder="Enter Product Name" required> <br> <br>
+
+        <label for="sellingPrice">Selling Price:</label>
+        <input type="number" id="sellingPrice" name="sp" placeholder="Enter Selling Price" required> <br> <br>
+
+        <label for="category">Category:</label>
+        <select id="category" name="cat">
+            <option value="electronics">Electronics</option>
+            <option value="skincare">Skincare</option>
+            <option value="health">Health</option>
+        </select>
+
+        <br><br><button type="submit" style="border-radius: 1rem; color: white; background-color: black;">Add
+            Product</button> <br><br>
+    </form>
+
+
+    <div class="output" style="text-align: center;">
+        <h2>Products</h2>
+        <div id="electronics" class="category-products">
+            <h3>Electronics</h3>
+            <ul id="electronics-list"></ul>
+        </div>
+        <div id="skincare" class="category-products">
+            <h3>Skincare</h3>
+            <ul id="skincare-list"></ul>
+        </div>
+        <div id="health" class="category-products">
+            <h3>Health</h3>
+            <ul id="health-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('productForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const productName = event.target.pn.value;
+            const sellingPrice = event.target.sp.value;
+            const category = event.target.cat.value;
+
+            const product = {
+                name: productName,
+                price: sellingPrice,
+                category: category
+            };
+
+            try {
+                const response = await axios.post(
+                    "https://crudcrud.com/api/a32d11c0fc324531b73943c6ae5cc78b/users", product);
+                product._id = response.data._id;
+
+
+                const products = JSON.parse(localStorage.getItem('products')) || [];
+                products.push(product);
+                localStorage.setItem('products', JSON.stringify(products));
+
+                displayProduct(product);
+                console.log(product);
+            } catch (e) {
+                console.log(e);
+            }
+
+            document.getElementById('productName').value = '';
+            document.getElementById('sellingPrice').value = '';
+            document.getElementById('category').value = 'electronics';
+        });
+
+        function displayProduct(product) {
+            let categoryList;
+            if (product.category === 'electronics') {
+                categoryList = document.getElementById('electronics-list');
+            } else if (product.category === 'skincare') {
+                categoryList = document.getElementById('skincare-list');
+            } else if (product.category === 'health') {
+                categoryList = document.getElementById('health-list');
+            }
+
+            const childElem = document.createElement('li');
+            childElem.innerHTML = `${product.name} - ${product.price} - ${product.category}`;
+            childElem.className = 'productList';
+            childElem.id = product._id;
+
+            const deleteButton = document.createElement('input');
+            const editButton = document.createElement('input');
+            editButton.type = 'button';
+            editButton.value = 'Edit';
+            deleteButton.type = 'button';
+            deleteButton.value = 'Delete';
+
+            editButton.addEventListener('click', editLogic);
+
+            async function editLogic(e) {
+                console.log(product);
+                document.getElementById('productName').value = product.name;
+                document.getElementById('sellingPrice').value = product.price;
+                document.getElementById('category').value = product.category;
+                categoryList.removeChild(childElem);
+
+                const products = JSON.parse(localStorage.getItem('products'));
+                const updatedProducts = products.filter((p) => p._id !== product._id);
+                localStorage.setItem('products', JSON.stringify(updatedProducts));
+                try {
+                    removeUserFromScreen(product._id);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+
+            deleteButton.addEventListener('click', deleteLogic);
+
+            async function deleteLogic(e) {
+                categoryList.removeChild(childElem);
+
+                const products = JSON.parse(localStorage.getItem('products'));
+                const updatedProducts = products.filter((p) => p._id !== product._id);
+                localStorage.setItem('products', JSON.stringify(updatedProducts));
+
+                try {
+                    await axios.delete(
+                        `https://crudcrud.com/api/a32d11c0fc324531b73943c6ae5cc78b/users/${product._id}`);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+
+            childElem.appendChild(deleteButton);
+            childElem.appendChild(editButton);
+            categoryList.appendChild(childElem);
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+
+            const products = JSON.parse(localStorage.getItem('products')) || [];
+            for (const product of products) {
+                displayProduct(product);
+            }
+        });
+
+        function removeUserFromScreen(productid) {
+            const paree = document.getElementById('productlist');
+            const chd = document.getElementById(productid);
+            if (chd) {
+                paree.removeChild(chd);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
